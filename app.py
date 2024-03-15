@@ -9,6 +9,7 @@ import venue_stats
 import detailed_stats
 import scorecard
 import ast
+import urllib.parse
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
@@ -94,44 +95,41 @@ def profile_page(column_name):
 
 @app.route('/stats_filter/<cell_value>/<column_name>')
 def stats_filter(cell_value, column_name):
-    if column_name == 'Players':
-        # Assuming data_manipulation.player_input_filter_stats returns a tuple containing the required data
-        x = data_manipulation.player_input_filter_stats(cell_value)
 
-        if x is None:
-            # Handle the case where player data is not found
-            # flash('Player data not found', 'error')
-            return redirect(url_for('/'))  # Redirect to an error page or handle as needed
+    cell_value = urllib.parse.unquote(cell_value)
+    # Assuming data_manipulation.player_input_filter_stats returns a tuple containing the required data
+    x = data_manipulation.player_input_filter_stats(cell_value)
+
+    if x is None:
+        # Handle the case where player data is not found
+        # flash('Player data not found', 'error')
+        return redirect(url_for('/'))  # Redirect to an error page or handle as needed
 
         # Check if x has enough elements
-        if len(x) >= 5:
-            debut_date, last_match_date, match_ID_list, played_for_teams, played_against_teams = x[0], x[1], x[2], x[3], x[4]
-        else:
-            # Handle the case where x does not have enough elements
-            # flash('Insufficient player data', 'error')
-            return redirect(url_for('/'))  # Redirect to an error page or handle as needed
+    if len(x) >= 5:
+        debut_date, last_match_date, match_ID_list, played_for_teams, played_against_teams = x[0], x[1], x[2], x[3], x[4]
+    else:
+        # Handle the case where x does not have enough elements
+        # flash('Insufficient player data', 'error')
+        return redirect(url_for('/'))  # Redirect to an error page or handle as needed
 
-        # Convert match_ID_list, played_for_teams, and played_against_teams to lists if needed
-        match_ID_list = ast.literal_eval(match_ID_list) if match_ID_list else []
-        played_for_teams = ast.literal_eval(played_for_teams) if played_for_teams else []
-        played_against_teams = ast.literal_eval(played_against_teams) if played_against_teams else []
+    # Convert match_ID_list, played_for_teams, and played_against_teams to lists if needed
+    match_ID_list = ast.literal_eval(match_ID_list) if match_ID_list else []
+    played_for_teams = ast.literal_eval(played_for_teams) if played_for_teams else []
+    played_against_teams = ast.literal_eval(played_against_teams) if played_against_teams else []
         
-        venue_lst = data_manipulation.get_venues_for_matches(match_ID_list)
-        seasons = data_manipulation.get_season(match_ID_list)
+    venue_lst = data_manipulation.get_venues_for_matches(match_ID_list)
+    seasons = data_manipulation.get_season(match_ID_list)
         
-        # Pass the additional variables to the template
-        return render_template('stats_filter.html',
-                               cell_value=cell_value, 
-                               column_name=column_name, 
-                               playing_teams=played_for_teams,
-                               opposition_teams=played_against_teams,
-                               venue_lst=venue_lst, debut_date=debut_date,
-                               last_match_date=last_match_date, 
-                               seasons=seasons)
-
-    # Handle other column names or invalid requests
-    # flash('Invalid column name', 'error')
-    return redirect(url_for('/'))  # Redirect to an error page or handle as needed
+    # Pass the additional variables to the template
+    return render_template('stats_filter.html',
+                            cell_value=cell_value, 
+                            column_name=column_name, 
+                            playing_teams=played_for_teams,
+                            opposition_teams=played_against_teams,
+                            venue_lst=venue_lst, debut_date=debut_date,
+                            last_match_date=last_match_date, 
+                            seasons=seasons)
 
 
 @app.route('/top_partnerships')
@@ -272,7 +270,8 @@ def top_bowling_economy():
 @app.route('/process_stats_filter/<cell_value>/<column_name>', methods=['POST'])
 def process_stats_filter(cell_value, column_name):
     
-    
+    cell_value = urllib.parse.unquote(cell_value)
+    column_name = urllib.parse.unquote(column_name)
     start_date = request.form.get('start_date')
     end_date = request.form.get('end_date')
     view_format = request.form.get('view_format')
