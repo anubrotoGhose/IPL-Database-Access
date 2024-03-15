@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def get_season(match_ID_list):
-    conn = sqlite3.connect('ipl_database.db')
+    conn = sqlite3.connect('./ipl_database.db')
     cursor = conn.cursor()
 
     # Convert the list of IDs to a tuple for the SQL query
@@ -26,7 +26,7 @@ def get_season(match_ID_list):
     return sorted(list(set(seasons)))
 
 def get_venues_for_matches(match_ID_list):
-    conn = sqlite3.connect('ipl_database.db')
+    conn = sqlite3.connect('./ipl_database.db')
     cursor = conn.cursor()
 
     # Convert the list of IDs to a tuple for the SQL query
@@ -49,7 +49,7 @@ def get_venues_for_matches(match_ID_list):
 
 
 def player_input_filter_stats(player_name):
-    conn = sqlite3.connect('ipl_database.db')
+    conn = sqlite3.connect('./ipl_database.db')
     cursor = conn.cursor()
     # print("In input filter_stats")
     # Define the SQL query to count the occurrences of the player's name in the Player_of_Match column
@@ -61,14 +61,19 @@ def player_input_filter_stats(player_name):
 
     # Execute the query with the player's name as a parameter
     cursor.execute(query, ('%' + player_name + '%',))
-    lst = [item for item in cursor.fetchone()]
+    # Fetch the first row from the result set
+    row = cursor.fetchone()
+    if row is not None:
+        lst = list(row)  # Convert the row tuple to a list
+    else:
+        lst = []  # Set an empty list if no data found
 
     conn.close()
 
     return lst
 
 def count_player_of_match(player_name):
-    conn = sqlite3.connect('ipl_database.db')
+    conn = sqlite3.connect('./ipl_database.db')
     cursor = conn.cursor()
 
     # Define the SQL query to count the occurrences of the player's name in the Player_of_Match column
@@ -87,7 +92,7 @@ def count_player_of_match(player_name):
     return count
 
 def get_match_ids(player_name, date):
-    conn = sqlite3.connect('ipl_database.db')
+    conn = sqlite3.connect('./ipl_database.db')
     cursor = conn.cursor()
 
     # Define the SQL query to retrieve the match IDs based on the provided player name and date
@@ -106,7 +111,7 @@ def get_match_ids(player_name, date):
     return match_ids
 
 def get_match_ids_and_teams_for_player(player_name):
-    conn = sqlite3.connect('ipl_database.db')
+    conn = sqlite3.connect('./ipl_database.db')
     cursor = conn.cursor()
     id_list = []
     date_list = []
@@ -478,7 +483,7 @@ def bowler_stats(player_name, start_date, end_date):
 
 def fielder_stats(player_name, start_date, end_date):
     # Connect to the SQLite database
-    conn = sqlite3.connect('ipl_database.db')
+    conn = sqlite3.connect('./ipl_database.db')
 
     # Read ipl_match_list and ipl_ball_by_ball tables into pandas dataframes
     ipl_match_list = pd.read_sql_query("SELECT * FROM ipl_match_list", conn)
