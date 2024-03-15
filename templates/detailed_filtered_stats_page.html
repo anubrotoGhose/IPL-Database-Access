@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detailed Filtered Stats Page</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="content">
+        <h1>Detailed Filtered Stats Page</h1>
+        <p>Stats of {{ cell_value }}</p>
+        <p>Category: {{ column_name }}</p>
+        <p>Playing Team: {{ playing_team }}</p>
+        <p>Opposition: {{ opposition }}</p>
+        <p>Start Date: {{ start_date }}</p>
+        <p>End Date: {{ end_date }}</p>
+        <p>View Format: {{ view_format }}</p>
+        <p>View Type: {{ view_type }}</p>
+    </div>
+    <h2>Batting Stats</h2>
+    <div class="content-large">
+        <table>
+            {{ df_bat|safe }}
+        </table>
+    </div>
+    <h2>Download CSV</h2>
+    <div class="download-csv">
+        <form action="{{ url_for('download_csv') }}" method="POST">
+            <input type="hidden" name="csv_data" value="{{ df_bat}}">
+            <button type="submit" class="btnn btn-primary">Download CSV</button>
+        </form>
+    </div>
+
+    <h2>Bowling Stats</h2>
+    <div class="content-large">
+        <table>
+            {{ df_bowl|safe }}
+        </table>
+    </div>
+    <h2>Download CSV</h2>
+    <div class="download-csv">
+        <form action="{{ url_for('download_csv') }}" method="POST">
+            <input type="hidden" name="csv_data" value="{{ df_bowl}}">
+            <button type="submit" class="btnn btn-primary">Download CSV</button>
+        </form>
+    </div> 
+    <h2>Fielding Stats</h2>
+    <div class="content-large">
+        <table>
+            {{ df_field|safe }}
+        </table>
+    </div>
+    <h2>Download CSV</h2>
+    <div class="download-csv">
+        <form action="{{ url_for('download_csv') }}" method="POST">
+            <input type="hidden" name="csv_data" value="{{ df_field}}">
+            <button type="submit" class="btnn btn-primary">Download CSV</button>
+        </form>
+    </div>
+</body>
+</html>
