@@ -66,7 +66,7 @@ def player_input_filter_stats(player_name):
     if row is not None:
         lst = list(row)  # Convert the row tuple to a list
     else:
-        lst = []  # Set an empty list if no data found
+        lst = [None, None, None, None, None]  # Set an empty list if no data found
 
     conn.close()
 
