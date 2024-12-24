@@ -57,6 +57,9 @@ To run the application after the initial setup:
   ```
 
 2. Run the application.
+  ```
+  flask run
+  ```
 
 3. Deactivate the virtual environment when done:
 
